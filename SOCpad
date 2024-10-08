@@ -1,4 +1,4 @@
-import platform
+import platform 
 import tkinter
 from tkinter import Tk, Button, Text, filedialog, Menu
 
