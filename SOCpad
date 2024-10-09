@@ -1,9 +1,9 @@
-import platform 
+import platform
 import tkinter
+from tkinter import simpledialog
 from tkinter import Tk, Button, Text, filedialog, Menu
 
 red = "#FF0000"
-
 v = platform.python_version()
 
 if "2.7" in v:
@@ -15,11 +15,9 @@ root = Tk()
 root.title("Harry's Text Editor")
 root.geometry("800x600")  # https://root.cern/manual/python/
 
-# {
-Font_tuple = ("Comic Sans MS", 20, "bold")
+Font_tuple = ("Helvetica", 14,)  # Sets default font and size
 text = Text(root, undo=True, autoseparators=True, maxundo=-1, font=Font_tuple)
 text.pack(expand=True, fill='both')
-# } Doesn't do anything, I think. ^^
 
 def saveAs():
     global text
@@ -42,6 +40,23 @@ def openFile():
 def undo_action(event=None):
     text.event_generate("<<Undo>>")
 
+def find_action(event=None):
+    search_string = simpledialog.askstring("Find", "Enter text to find:")
+    
+    if search_string:
+        text.tag_remove('found', '1.0', tkinter.END)
+
+        start_pos = '1.0'
+        while True:
+            start_pos = text.search(search_string, start_pos, stopindex=tkinter.END)
+            if not start_pos:
+                break
+            end_pos = f"{start_pos}+{len(search_string)}c"
+            text.tag_add('found', start_pos, end_pos)
+            start_pos = end_pos  
+
+        text.tag_config('found', foreground='white', background='blue')
+
 def redo_action(event=None):
     text.event_generate("<<Redo>>")
 
@@ -57,7 +72,7 @@ def paste_action(event=None):
         text.edit_separator()  # Mark
     except:
         pass
-
+    
 def copy_action(event=None):
     try:
         text.event_generate("<<Copy>>")
@@ -79,6 +94,7 @@ root.bind("<Control-o>", open_action)
 root.bind("<Control-x>", cut_action)   
 root.bind("<Control-c>", copy_action)  
 root.bind("<Control-v>", paste_action) 
+root.bind("<Control-f>", find_action)
 
 menu = Menu(root)
 root.config(menu=menu)
@@ -97,7 +113,6 @@ menu.add_cascade(label="Font", menu=font_menu)
 
 def change_font(font_name):
     text.config(font=(font_name, 20))
-
 
 font_menu.add_command(label="Helvetica", command=lambda: change_font("Helvetica"))
 font_menu.add_command(label="Courier", command=lambda: change_font("Courier"))
