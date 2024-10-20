@@ -1,17 +1,6 @@
 import platform
-import tkinter
-from tkinter import simpledialog
-from tkinter import Tk, Button, Text, filedialog, Menu
-
-red = "#FF0000"
-v = platform.python_version()
-
-if "2.7" in v:
-    from Tkinter import *
-else:import platform
-import tkinter
-from tkinter import simpledialog
-from tkinter import Tk, Button, Text, filedialog, Menu
+import tkinter as tk
+from tkinter import simpledialog, filedialog, messagebox, Menu
 
 red = "#FF0000"
 v = platform.python_version()
@@ -21,7 +10,7 @@ if "2.7" in v:
 else:
     from tkinter import *
 
-root = Tk()
+root = tk.Tk()
 root.title("SOCpad")
 root.geometry("800x600")  # https://root.cern/manual/python/
 
@@ -29,6 +18,14 @@ Font_tuple = ("Helvetica", 14,)  # Sets default font and size
 text = Text(root, undo=True, autoseparators=True, maxundo=-1, font=Font_tuple)
 text.pack(expand=True, fill='both')
 
+
+
+def wCount():
+    text_content = text.get("1.0", tk.END)
+    words = text_content.split()
+    word_count = len(words)
+    messagebox.showinfo("Word Count", f"Word Count: {word_count}")
+
 def saveAs():
     global text
     t = text.get("1.0", "end-1c")
@@ -54,11 +51,11 @@ def find_action(event=None):
     search_string = simpledialog.askstring("Find", "Enter text to find:")
     
     if search_string:
-        text.tag_remove('found', '1.0', tkinter.END)
+        text.tag_remove('found', '1.0', tk.END)
 
         start_pos = '1.0'
         while True:
-            start_pos = text.search(search_string, start_pos, stopindex=tkinter.END)
+            start_pos = text.search(search_string, start_pos, stopindex=tk.END)
             if not start_pos:
                 break
             end_pos = f"{start_pos}+{len(search_string)}c"
@@ -76,13 +73,12 @@ def save_action(event=None):
 def open_action(event=None):
     openFile()
 
-def paste_action(event=None):
+def paste_action(event = None):
     try:
-        text.event_generate("<<Paste>>")
-        text.edit_separator()  # Mark
+        text.event.generate("<<Paste>>")
     except:
         pass
-    
+
 def copy_action(event=None):
     try:
         text.event_generate("<<Copy>>")
@@ -97,13 +93,13 @@ def cut_action(event=None):
         pass
 
 # Key bindings for undo, redo, save, open, cut, copy, and paste
-root.bind("<Control-z>", undo_action)  
-root.bind("<Control-y>", redo_action)  
-root.bind("<Control-s>", save_action)  
-root.bind("<Control-o>", open_action)  
-root.bind("<Control-x>", cut_action)   
-root.bind("<Control-c>", copy_action)  
-root.bind("<Control-v>", paste_action) 
+root.bind("<Control-z>", undo_action)
+root.bind("<Control-y>", redo_action)
+root.bind("<Control-s>", save_action)
+root.bind("<Control-o>", open_action)
+root.bind("<Control-x>", cut_action)
+root.bind("<Control-c>", copy_action)
+root.bind("<Control-v>", paste_action)
 root.bind("<Control-f>", find_action)
 
 menu = Menu(root)
@@ -140,127 +136,11 @@ font_menu.add_command(label="Great Vibes", command=lambda: change_font("Great Vi
 font_menu.add_command(label="Calibri Light", command=lambda: change_font("Calibri Light"))
 font_menu.add_command(label="Wingdings 2", command=lambda: change_font("Wingdings 2"))
 
-root.mainloop()
+count_button = tk.Button(root, text="Count Words", command=wCount)
+count_button.pack(pady=5)
 
-    from tkinter import *
-
-root = Tk()
-root.title("Harry's Text Editor")
-root.geometry("800x600")  # https://root.cern/manual/python/
-
-Font_tuple = ("Helvetica", 14,)  # Sets default font and size
-text = Text(root, undo=True, autoseparators=True, maxundo=-1, font=Font_tuple)
-text.pack(expand=True, fill='both')
-
-def saveAs():
-    global text
-    t = text.get("1.0", "end-1c")
-    savelocation = filedialog.asksaveasfilename(defaultextension=".txt",
-                                                filetypes=[("Text files", "*.txt"),
-                                                           ("All files", "*.*")])
-    if savelocation:
-        with open(savelocation, "w") as file1:
-            file1.write(t)
-
-def openFile():
-    global text
-    file = filedialog.askopenfile(defaultextension=".txt",
-                                  filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-    if file:
-        text.delete(1.0, END)
-        text.insert(INSERT, file.read())
-
-def undo_action(event=None):
-    text.event_generate("<<Undo>>")
-
-def find_action(event=None):
-    search_string = simpledialog.askstring("Find", "Enter text to find:")
-    
-    if search_string:
-        text.tag_remove('found', '1.0', tkinter.END)
-
-        start_pos = '1.0'
-        while True:
-            start_pos = text.search(search_string, start_pos, stopindex=tkinter.END)
-            if not start_pos:
-                break
-            end_pos = f"{start_pos}+{len(search_string)}c"
-            text.tag_add('found', start_pos, end_pos)
-            start_pos = end_pos  
-
-        text.tag_config('found', foreground='white', background='blue')
-
-def redo_action(event=None):
-    text.event_generate("<<Redo>>")
-
-def save_action(event=None):
-    saveAs()
-
-def open_action(event=None):
-    openFile()
-
-def paste_action(event=None):
-    try:
-        text.event_generate("<<Paste>>")
-        text.edit_separator()  # Mark
-    except:
-        pass
-    
-def copy_action(event=None):
-    try:
-        text.event_generate("<<Copy>>")
-    except:
-        pass
-
-def cut_action(event=None):
-    try:
-        text.event_generate("<<Cut>>")
-        text.edit_separator()  # Mark no2
-    except:
-        pass
-
-# Key bindings for undo, redo, save, open, cut, copy, and paste
-root.bind("<Control-z>", undo_action)  
-root.bind("<Control-y>", redo_action)  
-root.bind("<Control-s>", save_action)  
-root.bind("<Control-o>", open_action)  
-root.bind("<Control-x>", cut_action)   
-root.bind("<Control-c>", copy_action)  
-root.bind("<Control-v>", paste_action) 
-root.bind("<Control-f>", find_action)
-
-menu = Menu(root)
-root.config(menu=menu)
-
-File_menu = Menu(menu)  # File menu
-menu.add_cascade(label="File", menu=File_menu)
-
-File_menu.add_command(label="Open", command=openFile)
-File_menu.add_command(label="Save As", command=saveAs)
-
-Edit_menu = Menu(menu, tearoff=0)  # Edit menu
-menu.add_cascade(label="Edit", menu=Edit_menu)
-
-font_menu = Menu(menu)  # Font menu
-menu.add_cascade(label="Font", menu=font_menu)
-
-def change_font(font_name):
-    text.config(font=(font_name, 20))
-
-font_menu.add_command(label="Helvetica", command=lambda: change_font("Helvetica"))
-font_menu.add_command(label="Courier", command=lambda: change_font("Courier"))
-font_menu.add_command(label="Comic Sans MS", command=lambda: change_font("Comic Sans MS"))
-font_menu.add_command(label="Terminal", command=lambda: change_font("Terminal"))
-font_menu.add_command(label="Eccentric Std", command=lambda: change_font("Eccentric Std"))
-font_menu.add_command(label="Arabic Transparent", command=lambda: change_font("Arabic Transparent"))
-font_menu.add_command(label="Rosewood Std Fill", command=lambda: change_font("Rosewood Std Fill"))
-font_menu.add_command(label="Hobo Std", command=lambda: change_font("Hobo Std"))
-font_menu.add_command(label="Cooper Std Black", command=lambda: change_font("Cooper Std Black"))
-font_menu.add_command(label="MS Sans Serif", command=lambda: change_font("MS Sans Serif"))
-font_menu.add_command(label="Trajan Pro", command=lambda: change_font("Trajan Pro"))
-font_menu.add_command(label="LilyUPC", command=lambda: change_font("LilyUPC"))
-font_menu.add_command(label="Great Vibes", command=lambda: change_font("Great Vibes"))
-font_menu.add_command(label="Calibri Light", command=lambda: change_font("Calibri Light"))
-font_menu.add_command(label="Wingdings 2", command=lambda: change_font("Wingdings 2"))
+# The below is not needed, open file is seen in the top left 
+#open_button = tk.Button(root, text="Open File", command=openFile)
+#open_button.pack(pady=5)
 
 root.mainloop()
