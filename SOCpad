@@ -13,7 +13,7 @@ else:
 root = tk.Tk()
 root.title("SOCpad")
 root.geometry("950x600")  # https://root.cern/manual/python/
-Font_tuple = ("Helvetica", 14,)  # Sets default font and size
+Font_tuple = ("Calibri Light", 11,)  # Sets default font and size
 button_frame = tk.Frame(root)
 
 button_frame.pack(side='bottom', fill='x', pady=5)
@@ -23,6 +23,12 @@ line_numbers.pack(side='left', fill='y')
 #Main wid
 text = Text(root, undo=True, autoseparators=True, maxundo=-1, font=Font_tuple)
 text.pack(side = 'right', expand = True, fill='both')
+
+
+def on_Scroll(*args):
+    text.yview(*args)
+    line_numbers.yview(*args)
+#can possibly be moved
 
 def update_line_numbers(event=None):
     line_numbers.config(state='normal')
@@ -34,14 +40,6 @@ def update_line_numbers(event=None):
 
     line_numbers.config (state = 'disabled') # edit disabled
 
-def on_Scroll(*args):
-    text.yview(*args)
-    line_numbers.yview(*args)
-#can possibly be moved belod def section
-Scrollbar = tk.Scrollbar(root, command=on_Scroll)
-Scrollbar.pack(side = 'right', fill='y')
-text.config(yscrollcommand=Scrollbar.set)
-line_numbers.config(yscrollcommand=Scrollbar.set)
 
 def wCount():
     text_content = text.get("1.0", tk.END)
@@ -147,10 +145,6 @@ def change_font(font_name):
 text.bind("<KeyRelease>", update_line_numbers)
 text.bind("<MouseWheel>", update_line_numbers)
 
-
-
-
-
 font_menu.add_command(label="Helvetica", command=lambda: change_font("Helvetica"))
 font_menu.add_command(label="Courier", command=lambda: change_font("Courier"))
 font_menu.add_command(label="Comic Sans MS", command=lambda: change_font("Comic Sans MS"))
@@ -167,11 +161,16 @@ font_menu.add_command(label="Great Vibes", command=lambda: change_font("Great Vi
 font_menu.add_command(label="Calibri Light", command=lambda: change_font("Calibri Light"))
 font_menu.add_command(label="Wingdings 2", command=lambda: change_font("Wingdings 2"))
 
-count_button = tk.Button(button_frame, text="Count Words", command=wCount)
+count_button = tk.Button(button_frame, text="Word Count", command=wCount)
 count_button.pack(pady=5)
 # The below is not needed, open file is seen in the top left 
 #open_button = tk.Button(root, text="Open File", command=openFile)
 #open_button.pack(pady=5)
+
+Scrollbar = tk.Scrollbar(root, command=on_Scroll)
+Scrollbar.pack(side = 'right', fill='y')
+text.config(yscrollcommand=Scrollbar.set)
+line_numbers.config(yscrollcommand=Scrollbar.set)
 
 update_line_numbers()
 root.mainloop()
