@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import simpledialog, filedialog, messagebox, Menu
 
 red = "#FF0000"
-v = platform.python_version()
+v = platform.python_version() 
 
 if "2.7" in v:
     from Tkinter import *
