@@ -1,5 +1,5 @@
 # SOCpad
-A cool text editor project
+A text editor project
 
 Update, pretty much done with this there is nothing else that I can think to add 
 
